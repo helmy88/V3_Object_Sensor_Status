@@ -1,20 +1,30 @@
-const int opponentSensorPin = 2; // Change this to the appropriate pin number
+const int sensorPins[] = {2, 3, 4, 5, 6}; // Array of sensor pins
+const int numSensors = sizeof(sensorPins) / sizeof(sensorPins[0]); // Number of sensors
 
 void setup() {
   Serial.begin(9600); // Initialize Serial Monitor
-  pinMode(opponentSensorPin, INPUT); // Set the sensor pin as input
+  
+  for (int i = 0; i < numSensors; i++) {
+    pinMode(sensorPins[i], INPUT); // Set sensor pins as input
+  }
 }
 
 void loop() {
-  // Read the state of the opponent sensor
-  int opponentState = digitalRead(opponentSensorPin);
-  
-  // Check the opponent sensor's state and display status
-  if (opponentState == HIGH) {
-    Serial.println("Opponent Detected!");
-  } else {
-    Serial.println("No Opponent Detected");
+  for (int i = 0; i < numSensors; i++) {
+    checkSensor(i); // Call the function to check the sensor
+    delay(1000); // Delay before checking the next sensor
   }
+}
+
+void checkSensor(int sensorIndex) {
+  int sensorState = digitalRead(sensorPins[sensorIndex]);
   
-  delay(1000); // Delay to avoid rapid Serial Monitor output
+  // Display status based on sensor state
+  Serial.print("Sensor ");
+  Serial.print(sensorIndex + 1);
+  if (sensorState == HIGH) {
+    Serial.println(": Opponent Detected!");
+  } else {
+    Serial.println(": No Opponent Detected");
+  }
 }
